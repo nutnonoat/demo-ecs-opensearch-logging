@@ -137,16 +137,6 @@ PUT _plugins/_ism/policies/ecs-logs-policy
 }
 ```
 
-### Verify task architecture
-
-```bash
-aws ecs describe-tasks \
-  --cluster demo-ecs-opensearch-logging \
-  --tasks $(aws ecs list-tasks --cluster demo-ecs-opensearch-logging --query 'taskArns' --output text) \
-  --query 'tasks[*].{launchType:launchType,arch:attributes[?name==`ecs.cpu-architecture`].value|[0]}' \
-  --region ap-southeast-1
-```
-
 ## Teardown
 
 ```bash
