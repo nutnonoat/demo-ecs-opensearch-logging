@@ -34,41 +34,52 @@ Resource limits: Fluent Bit sidecar is capped at 64 CPU / 128 MiB to prevent it 
 
 ## Prerequisites
 
-- AWS CLI configured
+- AWS CLI configured with valid credentials
 - Terraform >= 1.5
-- Docker with buildx (Colima or Docker Desktop)
+- Docker with buildx support (Colima or Docker Desktop)
 
 ## Deploy
 
-```bash
-cd ~/Workspaces/demo-ecs-opensearch-logging
-cp terraform.tfvars.example terraform.tfvars  # fill in your IP and region
-./deploy.sh        # creates ECR, builds & pushes image, updates tfvars
-terraform apply    # deploys everything (~10-15 min for OpenSearch)
-```
-
-### Build multi-arch image (optional, deploy.sh handles this automatically)
-
-If you need to rebuild manually:
+### 1. Clone and configure
 
 ```bash
-ECR_REPO="<account-id>.dkr.ecr.ap-southeast-1.amazonaws.com/demo-ecs-opensearch-logging-app"
-
-# One-command multi-arch build and push (requires buildx)
-docker buildx build \
-  --platform linux/amd64,linux/arm64 \
-  --provenance=false \
-  -t "${ECR_REPO}:latest" \
-  --push \
-  ./app
+git clone <repo-url>
+cd demo-ecs-opensearch-logging
+cp terraform.tfvars.example terraform.tfvars
 ```
 
-Note: First-time setup requires creating a multi-platform builder:
+Edit `terraform.tfvars`:
+- `region` — AWS region to deploy in (default: `ap-southeast-1`)
+- `app_image` — leave as-is, `deploy.sh` will update it automatically
+- `create_opensearch_service_linked_role` — set to `false` if the OpenSearch service-linked role already exists in your account
+
+### 2. Set up Docker buildx (first time only)
+
+The app image is built for both x86 and ARM (Graviton). This requires a multi-platform Docker builder:
+
 ```bash
 docker buildx create --name multiarch --driver docker-container --use
 ```
 
-### Access OpenSearch Dashboards
+### 3. Build and push the container image
+
+```bash
+./deploy.sh
+```
+
+This script will:
+1. Run `terraform init`
+2. Create the ECR repository
+3. Build and push a multi-arch Docker image (linux/amd64 + linux/arm64)
+4. Update `app_image` in `terraform.tfvars` with the ECR image URI
+
+### 4. Deploy the infrastructure
+
+```bash
+terraform apply    # ~10-15 min (OpenSearch takes the longest)
+```
+
+### 5. Access OpenSearch Dashboards
 
 OpenSearch is in a private subnet. Use SSM port forwarding through the bastion:
 
