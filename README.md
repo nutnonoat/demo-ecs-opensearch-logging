@@ -89,6 +89,8 @@ This script will:
 terraform apply    # ~10-15 min (OpenSearch takes the longest)
 ```
 
+> **Note:** If you see an error about the Managed Instances capacity provider not being ACTIVE, wait a minute and run `terraform apply` again. The capacity provider needs time to initialize after creation.
+
 ### 6. Access OpenSearch Dashboards
 
 OpenSearch is in a private subnet. Use SSM port forwarding through the bastion:
