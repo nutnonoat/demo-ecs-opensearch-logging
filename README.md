@@ -153,7 +153,7 @@ aws ecs describe-tasks \
 ./destroy.sh
 ```
 
-## Cost
+## Cost (ap-southeast-1 pricing)
 
 - OpenSearch `t3.small.search`: ~$1.50/day
 - NAT Gateway: ~$1.10/day
