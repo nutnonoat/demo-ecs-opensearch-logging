@@ -3,7 +3,8 @@ variable "region" {
 }
 
 variable "project" {
-  default = "demo-ecs-opensearch-logging"
+  description = "Project name used for all resource naming"
+  type        = string
 }
 
 variable "vpc_cidr" {

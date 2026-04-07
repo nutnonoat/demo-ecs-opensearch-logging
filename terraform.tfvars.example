@@ -1,3 +1,4 @@
+project   = "demo-ecs-opensearch-logging"
 region    = "ap-southeast-1"
 app_image = "REPLACE_AFTER_ECR_PUSH"  # deploy.sh updates this automatically
 create_opensearch_service_linked_role = true  # set to false if role already exists in account
