@@ -21,3 +21,9 @@ variable "create_opensearch_service_linked_role" {
   type        = bool
   default     = true
 }
+
+variable "opensearch_index_prefix" {
+  description = "Prefix for OpenSearch daily indices (e.g. ecs-logs → ecs-logs-2026.04.07)"
+  type        = string
+  default     = "ecs-logs"
+}

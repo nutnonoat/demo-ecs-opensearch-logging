@@ -67,9 +67,8 @@ resource "aws_ecs_task_definition" "app" {
           Name               = "es"
           Host               = aws_opensearch_domain.logs.endpoint
           Port               = "443"
-          Index              = "ecs-logs-%Y.%m.%d"
           Logstash_Format    = "On"
-          Logstash_Prefix    = "ecs-logs"
+          Logstash_Prefix    = var.opensearch_index_prefix
           Type               = "_doc"
           AWS_Auth           = "On"
           AWS_Region         = local.region
