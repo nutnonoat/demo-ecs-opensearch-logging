@@ -3,7 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REGION="${AWS_REGION:-ap-southeast-1}"
-PROJECT=$(terraform -chdir="$SCRIPT_DIR" console -no-color <<< 'var.project' 2>/dev/null | tr -d '"')
+PROJECT=$(grep -A1 'variable "project"' "$SCRIPT_DIR/variables.tf" | grep default | sed 's/.*"\(.*\)".*/\1/')
 cd "$SCRIPT_DIR"
 
 echo "=== Step 1: Terraform init ==="
