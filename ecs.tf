@@ -2,7 +2,7 @@
 resource "aws_ecs_cluster" "main" {
   name = local.name
 
-  depends_on = [aws_route.private_nat]
+  depends_on = [aws_route_table_association.private]
 }
 
 # --- ECR Repository for the log generator app ---
