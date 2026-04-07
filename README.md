@@ -49,6 +49,7 @@ cp terraform.tfvars.example terraform.tfvars
 ```
 
 Edit `terraform.tfvars`:
+- `project` — project name, used for all resource naming
 - `region` — AWS region to deploy in (default: `ap-southeast-1`)
 - `app_image` — leave as-is, `deploy.sh` will update it automatically
 - `create_opensearch_service_linked_role` — set to `false` if the OpenSearch service-linked role already exists in your account
