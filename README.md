@@ -36,7 +36,7 @@ Resource limits: Fluent Bit sidecar is capped at 64 CPU / 128 MiB to prevent it 
 
 - AWS CLI configured with valid credentials
 - Terraform >= 1.5
-- Docker with buildx support (Colima or Docker Desktop) — must be running before deploy
+- Docker with buildx support (Colima or Docker Desktop)
 
 ## Deploy
 
@@ -54,7 +54,16 @@ Edit `terraform.tfvars`:
 - `app_image` — leave as-is, `deploy.sh` will update it automatically
 - `create_opensearch_service_linked_role` — set to `false` if the OpenSearch service-linked role already exists in your account
 
-### 2. Set up Docker buildx (first time only)
+### 2. Start Docker
+
+```bash
+# Colima
+colima start
+
+# Or Docker Desktop — launch the app
+```
+
+### 3. Set up Docker buildx (first time only)
 
 The app image is built for both x86 and ARM (Graviton). This requires a multi-platform Docker builder:
 
@@ -62,7 +71,7 @@ The app image is built for both x86 and ARM (Graviton). This requires a multi-pl
 docker buildx create --name multiarch --driver docker-container --use
 ```
 
-### 3. Build and push the container image
+### 4. Build and push the container image
 
 ```bash
 ./deploy.sh
@@ -74,13 +83,13 @@ This script will:
 3. Build and push a multi-arch Docker image (linux/amd64 + linux/arm64)
 4. Update `app_image` in `terraform.tfvars` with the ECR image URI
 
-### 4. Deploy the infrastructure
+### 5. Deploy the infrastructure
 
 ```bash
 terraform apply    # ~10-15 min (OpenSearch takes the longest)
 ```
 
-### 5. Access OpenSearch Dashboards
+### 6. Access OpenSearch Dashboards
 
 OpenSearch is in a private subnet. Use SSM port forwarding through the bastion:
 
