@@ -36,7 +36,7 @@ Resource limits: Fluent Bit sidecar is capped at 64 CPU / 128 MiB to prevent it 
 
 - AWS CLI configured with valid credentials
 - Terraform >= 1.5
-- Docker with buildx support (Colima or Docker Desktop)
+- Docker with buildx support (Colima or Docker Desktop) — must be running before deploy
 
 ## Deploy
 
