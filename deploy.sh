@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REGION="${AWS_REGION:-ap-southeast-1}"
-PROJECT="demo-ecs-opensearch-logging"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REGION="${AWS_REGION:-ap-southeast-1}"
+PROJECT=$(terraform -chdir="$SCRIPT_DIR" console -no-color <<< 'var.project' 2>/dev/null | tr -d '"')
 cd "$SCRIPT_DIR"
 
 echo "=== Step 1: Terraform init ==="
