@@ -128,4 +128,6 @@ resource "aws_ecs_service" "app_mi" {
     subnets         = aws_subnet.private[*].id
     security_groups = [aws_security_group.ecs.id]
   }
+
+  depends_on = [aws_route.private_nat]
 }
