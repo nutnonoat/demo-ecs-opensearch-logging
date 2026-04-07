@@ -1,6 +1,8 @@
 # --- ECS Cluster ---
 resource "aws_ecs_cluster" "main" {
   name = local.name
+
+  depends_on = [aws_route.private_nat]
 }
 
 # --- ECR Repository for the log generator app ---
@@ -94,6 +96,4 @@ resource "aws_ecs_service" "app" {
     subnets         = aws_subnet.private[*].id
     security_groups = [aws_security_group.ecs.id]
   }
-
-  depends_on = [aws_route.private_nat]
 }
