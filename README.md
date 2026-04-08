@@ -4,7 +4,35 @@ Demonstrates centralized logging from ECS tasks to a VPC-based Amazon OpenSearch
 
 ## Architecture
 
-![Architecture Diagram](diagrams/ecs-opensearch-logging.png)
+```
+┌─ You (laptop) ────────────────────────────────────────────────────────┐
+│  SSM tunnel (port 8443 → 443)                                         │
+└──────────┬────────────────────────────────────────────────────────────┘
+           │
+┌─ AWS Account ─────────────────────────────────────────────────────────┐
+│  ┌─ VPC 10.0.0.0/16 ──────────────────────────────────────────────┐   │
+│  │  ┌─ Private Subnets ────────────────────────────────────────┐  │   │
+│  │  │                                                          │  │   │
+│  │  │  ┌─ ECS Fargate Task (x86) ───────────────────────────┐  │  │   │
+│  │  │  │  App Container → FireLens (Fluent Bit) ──┐         │  │  │   │
+│  │  │  └──────────────────────────────────────────┼─────────┘  │  │   │
+│  │  │                                             │            │  │   │
+│  │  │  ┌─ ECS Managed Instance Task (ARM/Graviton)┼─────────┐  │  │   │
+│  │  │  │  App Container → FireLens (Fluent Bit) ──┤         │  │  │   │
+│  │  │  └──────────────────────────────────────────┼─────────┘  │  │   │
+│  │  │                                             ▼            │  │   │
+│  │  │  OpenSearch (t3.small.search, VPC-based) ◄──┘            │  │   │
+│  │  │  Bastion (t4g.nano, SSM) ◄── SSM tunnel                  │  │   │
+│  │  └──────────────────────────────────────────────────────────┘  │   │
+│  │  ┌─ Public Subnets ─────────────────────┐                      │   │
+│  │  │  NAT Gateway → IGW → Internet        │                      │   │
+│  │  └──────────────────────────────────────┘                      │   │
+│  └────────────────────────────────────────────────────────────────┘   │
+│  ECR (multi-arch image: amd64 + arm64)                                │
+│  CloudWatch Logs (FireLens sidecar logs)                              │
+│  IAM Roles (task, execution, infrastructure, bastion)                 │
+└───────────────────────────────────────────────────────────────────────┘
+```
 
 ## Components
 
